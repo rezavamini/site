@@ -9,6 +9,7 @@ def sum_counted_view(pid):
     post.save()
     
     
+    
 def blog_view(request):
     corrent_time = timezone.now()
     Posts = Post.objects.filter(published_date__lte=corrent_time,status = 1)
@@ -16,9 +17,9 @@ def blog_view(request):
     return render(request,"blog/blog-home.html",context)
 
 def blog_single(request,pid):
+    sum_counted_view(pid)
     post = get_object_or_404(Post,pk=pid)
     context = {'post':post}
-    sum_counted_view(pid)
     return render(request,"blog/blog-single.html",context)
 
 def test(request):
