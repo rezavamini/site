@@ -14,16 +14,16 @@ def blog_single(request,pid):
     current_post = Post.objects.get(id=pid)
 
     #  پست قبلی
-    try:
-        previous_post = Post.objects.filter(id__lt=pid).latest('id')
-    except Post.DoesNotExist:
-        previous_post = None
+   # try:
+      #  previous_post = Post.objects.filter(id__lt=pid).latest('id')
+   # except Post.DoesNotExist:
+      #  previous_post = None
 
     #  پست بعدی
-    try:
-        next_post = Post.objects.filter(id__gt=pid).earliest('id')
-    except Post.DoesNotExist:
-        next_post = None
+    #try:
+      #  next_post = Post.objects.filter(id__gt=pid).earliest('id')
+    #except Post.DoesNotExist:
+      #  next_post = None
     
     post = get_object_or_404(Post,id=pid)
     
@@ -35,9 +35,9 @@ def blog_single(request,pid):
     corrent_time = timezone.now()
     post = get_object_or_404(Post,pk=pid,published_date__lte=corrent_time,status = 1)
     context = {'post':post,
-               'current_post': current_post,
-        'previous_post': previous_post,
-        'next_post': next_post
+               #'current_post': current_post,
+        #'previous_post': previous_post,
+        #'next_post': next_post
               
         
         }
