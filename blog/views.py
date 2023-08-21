@@ -2,16 +2,18 @@ from django.shortcuts import get_object_or_404, render
 from blog.models import Post
 from django.utils import timezone
 
-def blog_view(request):
+def blog_view(request,cat_name=None):
     corrent_time = timezone.now()
     Posts = Post.objects.filter(published_date__lte=corrent_time,status = 1)
+    if cat_name:
+      Posts = Posts.filter(category__name = cat_name )
     context = {'Posts': Posts}
     return render(request,"blog/blog-home.html",context)
 
 def blog_single(request,pid):
     #باید به عرض برسونم که چیزی جز این روش به ذهنم نرسید ولی واقعا دیگه نمیدونم مشکل کجاست با تشکر
        #  پست فعلی
-    current_post = Post.objects.get(id=pid)
+    #current_post = Post.objects.get(id=pid)
 
     #  پست قبلی
    # try:
@@ -43,5 +45,8 @@ def blog_single(request,pid):
         }
     return render(request,"blog/blog-single.html",context)
 
-def test(request):
-    return render(request,'test.html')
+def blog_category(request,cat_name):
+  posts = Post.objects.filter(status = 1)
+  posts = posts.filter(category__name = cat_name )
+  context = {'Posts': posts}
+  return render(request,'blog/blog-home.html',context)
