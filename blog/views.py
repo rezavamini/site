@@ -2,11 +2,15 @@ from django.shortcuts import get_object_or_404, render
 from blog.models import Post
 from django.utils import timezone
 
-def blog_view(request,cat_name=None):
+def blog_view(request,**kwargs):
     corrent_time = timezone.now()
     Posts = Post.objects.filter(published_date__lte=corrent_time,status = 1)
-    if cat_name:
-      Posts = Posts.filter(category__name = cat_name )
+    #فیلتر بر اساس کتگوری
+    if kwargs.get('cat_name') != None:
+      Posts = Posts.filter(category__name = kwargs['cat_name'] )
+      #فیلتر بر استاس نویسنده
+    if kwargs.get('author_username') != None:
+      Posts = Posts.filter(author__username = kwargs['author_username'])
     context = {'Posts': Posts}
     return render(request,"blog/blog-home.html",context)
 
@@ -50,3 +54,12 @@ def blog_category(request,cat_name):
   posts = posts.filter(category__name = cat_name )
   context = {'Posts': posts}
   return render(request,'blog/blog-home.html',context)
+
+def blog_search(request):
+ corrent_time = timezone.now()
+ Posts = Post.objects.filter(published_date__lte=corrent_time,status = 1)
+ if request.method == 'GET':
+   if s := request.GET.get('s'):
+    Posts = Posts.filter(content__contains = s)
+ context = {'Posts': Posts}
+ return render(request,"blog/blog-home.html",context)
