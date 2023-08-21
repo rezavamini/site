@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from blog.models import Post
 from django.utils import timezone
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 def blog_view(request,**kwargs):
     corrent_time = timezone.now()
@@ -8,9 +9,19 @@ def blog_view(request,**kwargs):
     #فیلتر بر اساس کتگوری
     if kwargs.get('cat_name') != None:
       Posts = Posts.filter(category__name = kwargs['cat_name'] )
-      #فیلتر بر استاس نویسنده
+      #فیلتر بر اساس نویسنده
     if kwargs.get('author_username') != None:
       Posts = Posts.filter(author__username = kwargs['author_username'])
+    #پیج بندی صفحه 
+    Posts = Paginator(Posts,3)
+    page_number = request.GET.get('page')
+    try:
+      Posts = Posts.get_page(page_number)
+    except PageNotAnInteger:
+      Posts = Posts.page(2)
+    except EmptyPage:
+      Posts = Posts.page(2)
+    
     context = {'Posts': Posts}
     return render(request,"blog/blog-home.html",context)
 
